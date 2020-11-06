@@ -4,7 +4,7 @@ metadata:
   name: node-cart
   namespace: default
 spec:
-  replicas: 3
+  replicas: 4
   selector:
     matchLabels:
       name: node-cart
