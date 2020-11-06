@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-user
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: flask-user
+  template:
+    metadata:
+      labels:
+        name: flask-user
+    spec:
+      containers:
+      - name: flask-user
+        image: issabaddour/issa_flask:user_service14
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-user-service
+  labels:
+    name: flask-user
+spec:
+  ports:
+  - port: 80
+    targetPort: 5000
+    protocol: TCP
+  selector:
+    name: flask-user

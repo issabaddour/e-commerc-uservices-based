@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-products
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: spring-products
+  template:
+    metadata:
+      labels:
+        name: spring-products
+    spec:
+      containers:
+      - name: spring-products
+        image: issabaddour/issajava:products_service
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-products-service
+  labels:
+    name: spring-products
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    name: spring-products

@@ -1,0 +1,48 @@
+version: '3.1'
+services:
+
+    db:
+        image: mysql:5.7
+        container_name: mysql-con
+        restart: always
+        environment:
+            MYSQL_DATABASE: 'db'
+            MYSQL_USER: 'root'
+            MYSQL_PASSWORD: '12345'
+            MYSQL_ROOT_PASSWORD: 'root'
+        ports:
+        - '6033:3306'
+        expose:
+        - '3306'
+        volumes:
+        - my-db:/var/lib/mysql
+        networks:
+        - frontend
+        
+        
+    java-app:
+        build:
+            context: initial
+            dockerfile: Dockerfile
+        container_name: java-app-con
+        image: java-spring-boot/latest
+        ports:
+        - "80:80"
+        - "443:443"
+        depends_on:
+        - db
+        networks:
+        - frontend
+        
+    
+        
+networks:
+  frontend:
+    driver: bridge
+    
+volumes:
+    my-db:
+        driver: local
+
+
+        

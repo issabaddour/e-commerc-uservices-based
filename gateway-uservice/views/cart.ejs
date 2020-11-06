@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Cart</title>
+  <!-- MDB icon -->
+  <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+  <!-- Bootstrap core CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <!-- Material Design Bootstrap -->
+  <link href="css/mdb.min.css" rel="stylesheet">
+  <!-- Your custom styles (optional) -->
+  <link href="css/style.min.css" rel="stylesheet">
+  <style type="text/css">
+    html,
+    body,
+    header,
+    .carousel {
+      height: 60vh;
+    }
+
+    @media (max-width: 740px) {
+
+      html,
+      body,
+      header,
+      .carousel {
+        height: 100vh;
+      }
+    }
+
+    @media (min-width: 800px) and (max-width: 850px) {
+
+      html,
+      body,
+      header,
+      .carousel {
+        height: 100vh;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <%- include("partials/Navbar") %>
+  <!-- Navbar -->
+  <script>
+    window.onload = function() {
+        findTotal();
+    };
+  function removeItem(c){
+    var r = c.parentNode.parentNode.rowIndex;
+    document.getElementById("cart").deleteRow(r);
+    findTotal();
+    //alert(x);
+    }
+    function findTotal(){
+      var total = 0;
+      for(var i = 1; i<document.getElementById("cart").rows.length-2; i++){
+      var x = document.getElementById("cart").rows[i].cells[1].innerHTML;
+      x = x.substring(0, x.length - 1);
+      total = total + parseInt(x);
+    }
+    document.getElementById("label_total").innerHTML = "Total " + total + '$';
+    }
+  </script>
+    <main>
+<div class="container">
+    
+    <section class="text-center mb-4" style="padding-top: 65px;">
+        
+    <div class="row wow fadeIn">
+	<table onload="findTotal();" id="cart" class="table table-hover table-condensed">
+        <thead>
+            <tr>
+                <th style="width:50%">Product</th>
+                <th style="width:10%">Price</th>
+                <th style="width:10%"></th>
+            </tr>
+        </thead>
+        <tbody>
+          <%for(let i=0;i<data.length;++i) {%>
+          <form class="col-lg-3 col-md-6 mb-4"  method="post" action="/cart">
+          
+            <tr id=<%-data[i].product_id%>>
+                <td data-th="Product">
+                    <div class="row">
+                        <div class="col-sm-2 hidden-xs">
+                          <div class="view overlay">
+                            <img src= <%-data[i].photo_url%> class="card-img-top" alt="">
+                            <a>
+                              <div class="mask rgba-white-slight"></div>
+                               </a>
+                              </div>
+                        </div>
+                        <div class="col-sm-10">
+                            <h4 class="nomargin"><%-data[i].name%></h4>
+                            <%-data[i].type%>
+                        </div>
+                    </div>
+                </td>
+                <td data-th="Price"><%-data[i].price%></td>
+                <td class="actions" data-th="">
+                    <!--<button class="btn btn-info btn-sm">test1<i class="fa fa-refresh"></i></button>-->
+                    <button class="btn btn-danger btn-sm" type="submit" >Remove<i class="fa fa-trash-o"></i></button>								
+                </td>
+            </tr>
+            
+            <input type="hidden" name="productID" value="<%-data[i].product_id%>" />
+          </form>
+            <%}%>
+           
+        </tbody>
+        <tfoot>
+            <tr class="visible-xs">
+                <td id ="label_total" class="text-center"><strong>Total 0.00</strong></td>
+            </tr>
+            <tr>
+                <td><a href="/" class="btn btn-warning"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
+                <td colspan="2" class="hidden-xs"></td>
+                <td class="hidden-xs text-center"><strong></strong></td>
+                <td><a href="/payment" class="btn btn-success btn-block">Place an order<i class="fa fa-angle-right"></i></a></td>
+            </tr>
+        </tfoot>
+    
+    </table>
+    </section>
+    </section>
+</div>
+</main>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Orders</title>
+  <!-- MDB icon -->
+  <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+  <!-- Google Fonts Roboto -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <!-- Material Design Bootstrap -->
+  <link rel="stylesheet" href="css/mdb.min.css">
+  <!-- Your custom styles (optional) -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <%- include("partials/Navbar") %>
+  <!-- Navbar -->
+
+ <div class="main-content">
+   <!-- Page content -->
+   <div class="container-fluid mt--7">
+     <!-- Table -->
+     <div class="row" style="padding-top: 65px;">
+       <div class="col">
+         <div class="card shadow">
+           <div class="card-header border-0">
+             <h3 class="mb-0">Your orders</h3>
+           </div>
+           <div class="table-responsive">
+             <table class="table align-items-center table-flush">
+               <thead class="thead-light">
+                 <tr>
+                  <th style="text-align: center; vertical-align: middle;" scope="col"> </th>
+                  <th style="text-align: center; vertical-align: middle;" scope="col">Product</th>
+                  <th style="text-align: center; vertical-align: middle;" scope="col">Price</th>
+                  <th style="text-align: center; vertical-align: middle;" scope="col">Status</th>
+                  <th style="text-align: center; vertical-align: middle;" scope="col">Date</th>
+                  <th style="text-align: center; vertical-align: middle;" scope="col"></th>
+                 </tr>
+               </thead>
+               <tbody>
+                <%for(let i=0;i<data.length;++i) {%>
+                 <tr>
+                  <td>
+            <img src= <%-data[i].photo_url%> width="100" height="100" alt="">
+                  </td>
+                   <td style="text-align: center; vertical-align: middle;">
+                    <h4 class="nomargin"><%-data[i].name%></h4>
+                            <%-data[i].type%>
+                   </td>
+                   <td style="text-align: center; vertical-align: middle;">
+                    <%-data[i].price%>
+                  </td>
+                  <td style="text-align: center; vertical-align: middle;">
+                  
+                    <%-data[i].status%>
+              </td>
+              <td style="text-align: center; vertical-align: middle;">
+                <%-data[i].date_time%>
+                   </td>
+                 </tr>
+            <%}%>
+               </tbody>
+             </table>
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
+ </div>
+    
+  <!-- jQuery -->
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <!-- Bootstrap tooltips -->
+  <script type="text/javascript" src="js/popper.min.js"></script>
+  <!-- Bootstrap core JavaScript -->
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  <!-- MDB core JavaScript -->
+  <script type="text/javascript" src="js/mdb.min.js"></script>
+  <!-- Your custom scripts (optional) -->
+  <script type="text/javascript"> </script>
+
+</body>
+</html>

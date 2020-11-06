@@ -1,0 +1,19 @@
+{
+  "name": "cart-service",
+  "version": "1.0.0",
+  "description": "cart serive provide carts items and previous orders",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Issa Baddour",
+  "license": "ISC",
+  "dependencies": {
+    "@cloudant/cloudant": "^4.2.4",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "node-datetime": "^2.1.2",
+    "request": "^2.88.2"
+  }
+}

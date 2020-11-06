@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-cart
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: node-cart
+  template:
+    metadata:
+      labels:
+        name: node-cart
+    spec:
+      containers:
+      - name: node-cart
+        image: issabaddour/issanode:cart_service
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-cart-service
+  labels:
+    name: node-cart
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    name: node-cart
