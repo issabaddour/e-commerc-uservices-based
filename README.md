@@ -19,12 +19,11 @@ This application contains only the core functionalities needed to cover any e-co
 Using Amazon EC2 service, we created a cluster of servers inside the VPC (virtual private cloud); this cluster contains seven nodes (1 master and 6 slaves). Deploying on cluster instead of single server gives the system high availability and reliability.
 
 ## Building Docker images (containerizing the components)
-In real world scenario, each service could have its own developing team due to the loose coupling feature of microservices architecture. In the application, all services have been developed separately using different technology. Table 6.5 shows each service and its respective technologies.
+In real world scenario, each service could have its own developing team due to the loose coupling feature of microservices architecture. In the application, all services have been developed separately using different technology.
 
-We need Docker file for each service in order to bundle it in a single Docker image. Each
-database need to run separately from its service, hence it will run in different container and it is not part of the service image. Table 6.6 shows each service and its docker image name.
+We need Docker file for each service in order to bundle it in a single Docker image. Each database need to run separately from its service, hence it will run in different container and it is not part of the service image. 
 
-After building container image for each service, we pushed them into Docker Hub repositories in my account that is why all images name starts with issabaddour (account id). Figure 6.4 shows docker container images pushed on Docker Hub
+After building container image for each service, we pushed them into Docker Hub repositories in my account that is why all images name starts with issabaddour (account id).
 
 ## Deploying the application
 We used Kubernetes to deploy and manage the services. In Kubernetes, we use files written in YAML language to set our desired configuration on the cluster and all the resources needed in order to run the application properly. Hence, for each deployment, service, feature etc. we have a YAML file that describe and configure that part of the application. The next section shows what resources needed in the application and their respective YAML files.
@@ -44,56 +43,68 @@ We can identify three types of failure that could happen in the application; thr
 - Container failure
 
 #### Node failure
-The original state is shown in Figure 6.6. To simulate node failure we can use AWS console to terminate one of EC2 instances, in this test we terminated:
-          ip-172-20-59-96.ap-south-1.compute.internal
-Figure 6.6 shows that this node was hosting one replica from each of User service and Products service, which means that the terminated node had two pods:
-                  flask-user-75fb7bd745-djzqm
-               spring-products-78f44f467f-r8fw9
+To simulate node failure we can use AWS console to terminate one of EC2 instances, in this test we terminated:
+ ```
+ ip-172-20-59-96.ap-south-1.compute.internal
+ ```
+This node was hosting one replica from each of User service and Products service, which means that the terminated node had two pods:
+```
+flask-user-75fb7bd745-djzqm
+spring-products-78f44f467f-r8fw9
+```
 After five to ten minutes, we could see that a new node has been created with two new pods to replace the original ones. New node’s name is:
-          ip-172-20-38-135.ap-south-1.compute.internal
+```
+ip-172-20-38-135.ap-south-1.compute.internal
+```
 New pods’ names are:
-   flask-user-75fb7bd745-fl54f
+```
+flask-user-75fb7bd745-fl54f
 spring-products-78f44f467f-xl8z5
-
+```
 #### Pod failure
 To simulate pods failure we can use kubernetes control command to delete any pod. We used the following command to delete two pods:
+```
 Kubectl delete pod flask-user-75fb7bd745-ghkzp
 Kubectl delete pod spring-products-78f44f467f-xl8z5
+```
 After five minutes, we checked system state and found that two new pods have been created, hence, the number of pods match the desired configuration.
 New pods’ names are:
-                  flask-user-75fb7bd745-d7ce1
-               spring-products-78f44f467f-s6ca8
-               
+```
+flask-user-75fb7bd745-d7ce1
+spring-products-78f44f467f-s6ca8
+```            
                
 #### Container failure
 This case is the simplest one as kubernetes can restart the containers inside any pod in a matter of few seconds thanks to the lightweight feature of containers.
 I used kubectl exec command to execute kill 1 command on container inside the following pod:
-                  flask-user-75fb7bd745-fl54f
+```
+flask-user-75fb7bd745-fl54f
+```
 After checking the state, we found that the pod was still running and the only change was the number of restarts for that pod.
 
 ### Auto-scaling test
 In the initial configuration, we used YAML files to scale up each service (except Gateway service) manually. In paragraph 6.2.4.2, the configuration shows that the parameter replicas takes the value of three. However, since this value may not match with the actual needs, creating three replicas will waste the resources. In order to make the system more efficient, we should use HPA (Horizontal Pod Auto-scaler), which scales pods up or down based on resource utilization.
-Figure 6.5 shows the application with initial manual scaling, we used the following command to apply auto-scaling based on CPU usage. Kubernetes will create new replica when the CPU usage reaches the defined threshold.
-kubectl autoscale deployment flask-user --cpu-percent=80 --min=1 --max=5 kubectl autoscale deployment node-cart --cpu-percent=80 --min=1 --max=5 kubectl autoscale deployment s-products --cpu-percent=80 --min=1 --max=5
+We used the following command to apply auto-scaling based on CPU usage. Kubernetes will create new replica when the CPU usage reaches the defined threshold.
+```
+kubectl autoscale deployment flask-user --cpu-percent=80 --min=1 --max=5 
+kubectl autoscale deployment node-cart --cpu-percent=80 --min=1 --max=5 
+kubectl autoscale deployment s-products --cpu-percent=80 --min=1 --max=5
+```
 After five minutes of being in idle state (without requests load), we found that all replicas has been scaled down to one.
 
 To simulate a load of requests from clients, we deployed a new pod that generates fake requests and sends it to all the services. These requests will force pods to consume more resources, and eventually CPU usage will reach its threshold. After five minutes of generating fake load, we found that kubernetes starts creating new replicas, but this time services are not equally scaled, thanks to auto-scaling configuration Cart-service was scaled up to two replicas only and one replica of User-service was enough to handle the fake load, however, five replicas of Products-service was needed. Figure 6.11 shows application components after sending fake load of requests to the services.
 
 ##  Conclusion
 Implementing a microservices-based application and running tests on it helped us understand the benefits of this architecture and demonstrate its advantages. The demonstrated advantages are:
-### High availability
+- High availability
 We found that the application was able to recover from three types of failure (node, pod and container), and how it maintains the desired configuration specified by system administrator.
-### Easily scalable
+- Easily scalable
 We found how we could easily use YAML files to configure the desired number of replicas for each component in the application, and how we could use resource metrics (CPU usage) to apply auto-scaling based on predefined threshold value.
-### Efficiency
+- Efficiency
 We found how applying auto-scaling configuration would help in minimizing resources usage as the components will be scaled up or down based on the current needs.
-### Polyglot model
+- Polyglot model
 We could use different platform/ framework with different database system for each service, which allows using the right technology for the right task, with no long-term commitment to it. Moreover, the freedom of using many technologies let developer choose what match their skills and previous experiences.
-### Flexible model
+- Flexible model
 Changes in business logic will lead to requirements that affect a small part of the application. Since each service is isolated from the others, we could redeploy that part without having to shut down or disturb the remaining parts.
-### Easily integrated
+- Easily integrated
 We easily integrated Authentication service provided by Auth0 with the application, and we linked one service with external database provided by IBM Cloud (IBM Cloudant).
-
-
-
-
