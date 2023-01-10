@@ -28,9 +28,9 @@ After building container image for each service, we pushed them into Docker Hub 
 ## Deploying the application
 We used Kubernetes to deploy and manage the services. In Kubernetes, we use files written in YAML language to set our desired configuration on the cluster and all the resources needed in order to run the application properly. Hence, for each deployment, service, feature etc. we have a YAML file that describe and configure that part of the application. The next section shows what resources needed in the application and their respective YAML files.
 
-To deploy databases in the cluster we used the official docker images, which is already pushed to Docker Hub in the official repositories for each database system. We should mention image name with desired version in the configuration files then kubernetes will pull and deploy it. After applying the desired configuration using kubctl apply command, the application will run as shown in the following diagram.
+To deploy databases in the cluster we used the official docker images, which is already pushed to Docker Hub in the official repositories for each database system. We should mention image name with desired version in the configuration files then kubernetes will pull and deploy it. After applying the desired configuration using  ```kubctl apply``` command, the application will run as shown in the following diagram.
 
-Kubernetes will arrange the pods (logical host for the container) on all the available nodes in the clusters, which in this case 6 slave nodes. To show pods details including the node name that runs each one by kubectl get pods –o wide command, result will be as the following.
+Kubernetes will arrange the pods (logical host for the container) on all the available nodes in the clusters, which in this case 6 slave nodes. To show pods details including the node name that runs each one by  ```kubectl get pods –o wide``` command, result will be as the following.
 
 The previous YAML files show that we configured the application to create three replicas for each service -except Gateway service-. Since we used Cloudant database, which is a service from IBM Cloud, it will not show up in the cluster, however, we can see that the Cart service connecting to the internet (outside the cluster) because it is connected to Cloudant database in IBM Cloud. The same goes for Authentication service, which is an IDaaS service, provided by Auth0, Gateway service would connect to this service on the internet as well to validate users’ requests. Hence, we have 12 running pods (pods are logical host for the containers); these pods are distributed on six slave nodes.
 
@@ -76,7 +76,7 @@ spring-products-78f44f467f-s6ca8
                
 #### Container failure
 This case is the simplest one as kubernetes can restart the containers inside any pod in a matter of few seconds thanks to the lightweight feature of containers.
-I used kubectl exec command to execute kill 1 command on container inside the following pod:
+I used kubectl exec command to execute ```kill 1``` command on container inside the following pod:
 ```
 flask-user-75fb7bd745-fl54f
 ```
